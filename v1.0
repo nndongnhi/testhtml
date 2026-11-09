@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Component trình bày ý tưởng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: một cột 1080px, mỗi section là một component, nền xám xanh lạnh, nhấn teal; hổ phách dành riêng cho điểm người duyệt. */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --surface-2:#e8eef2; --ink:#14212b; --muted:#506271; --line:#d0dae1;
+  --accent:#0b7a75; --accent-ink:#ffffff; --accent-soft:#d5eeeb;
+  --warn:#9a5400; --warn-soft:#fbe8cc;
+  --kind-code:#4a5d6b;
+  --code-bg:#0f1b24; --code-ink:#d8e6ef;
+  --slide-bg:#0f1b24; --slide-ink:#eaf2f7; --slide-muted:#9db1be; --slide-accent:#4fd1c5; --slide-warn:#f0b35a;
+  --shadow:0 1px 2px rgba(20,33,43,.06),0 10px 28px rgba(20,33,43,.08);
+  --display:'Bricolage Grotesque','IBM Plex Sans',system-ui,sans-serif;
+  --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c151c; --surface:#142029; --surface-2:#1b2b36; --ink:#e6eef4; --muted:#9bb0be; --line:#2a3d4a;
+    --accent:#4fd1c5; --accent-ink:#06201e; --accent-soft:#12403f;
+    --warn:#f0b35a; --warn-soft:#3b2b10;
+    --kind-code:#9fb3c0;
+    --code-bg:#091118; --code-ink:#d8e6ef;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c151c; --surface:#142029; --surface-2:#1b2b36; --ink:#e6eef4; --muted:#9bb0be; --line:#2a3d4a;
+  --accent:#4fd1c5; --accent-ink:#06201e; --accent-soft:#12403f;
+  --warn:#f0b35a; --warn-soft:#3b2b10;
+  --kind-code:#9fb3c0;
+  --code-bg:#091118; --code-ink:#d8e6ef;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h2{font-size:clamp(1.5rem,3vw,2rem);line-height:1.15;font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0}
+code,.mono{font-family:var(--mono)}
+/* ---------- Navigation ---------- */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:20px;height:56px}
+.brand{font:800 1rem var(--display);white-space:nowrap}
+.brand span{color:var(--accent)}
+.links{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+.links::-webkit-scrollbar{display:none}
+.links a{white-space:nowrap;text-decoration:none;color:var(--muted);font-weight:500;font-size:.92rem;padding:7px 12px;border-radius:8px;transition:background .15s,color .15s}
+.links a:hover{background:var(--surface-2);color:var(--ink)}
+.links a[aria-current="true"]{background:var(--accent-soft);color:var(--accent)}
+/* ---------- Hero ---------- */
+.hero{padding:48px 0 8px}
+.hero h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.05;font-weight:800;letter-spacing:-.02em;max-width:18ch}
+.hero p{margin-top:14px;max-width:62ch;color:var(--muted);font-size:1.05rem}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{font:500 .78rem var(--mono);padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted)}
+/* ---------- Sections ---------- */
+section{padding:64px 0 0;scroll-margin-top:64px}
+.eyebrow{font:500 .76rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.lede{margin-top:10px;color:var(--muted);max-width:66ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+/* ---------- Flow diagram ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:20px 0 14px;font-size:.85rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:10px;height:10px;border-radius:3px;background:var(--k)}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr;align-items:stretch;gap:6px}
+.node{--k:var(--accent);position:relative;text-align:left;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--k);border-radius:12px;padding:14px 14px 16px;display:flex;flex-direction:column;gap:6px;transition:transform .18s,box-shadow .18s,opacity .18s,background .18s}
+.node.code{--k:var(--kind-code)}
+.node .kind{font:500 .7rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--k)}
+.node strong{font:800 1.05rem/1.2 var(--display)}
+.node .d{font-size:.84rem;line-height:1.4;color:var(--muted)}
+.node .gate{align-self:flex-start;margin-top:auto;font:500 .7rem var(--mono);color:var(--warn);background:var(--warn-soft);border-radius:999px;padding:2px 9px}
+.node.is-active{transform:translateY(-3px);box-shadow:0 0 0 2px var(--k),var(--shadow);background:var(--surface)}
+.flow.has-active .node:not(.is-active){opacity:.55}
+.link{display:grid;place-items:center;color:var(--line);transition:color .18s}
+.link.on{color:var(--accent)}
+.link svg{display:block}
+.flow-detail{margin-top:16px;padding:20px 22px;display:grid;grid-template-columns:1.1fr 1fr 1fr 1.2fr;gap:20px}
+.flow-detail h3{grid-column:1/-1;display:flex;align-items:baseline;gap:10px}
+.flow-detail h3 small{font:500 .78rem var(--mono);color:var(--muted)}
+.flow-detail dt{font:500 .7rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.flow-detail dd{margin:0;font-size:.92rem}
+.flow-detail .human dd{color:var(--warn)}
+/* ---------- Tabs ---------- */
+.tabs{margin-top:22px;overflow:hidden}
+[role=tablist]{display:flex;border-bottom:1px solid var(--line);background:var(--surface-2);overflow-x:auto;scrollbar-width:none}
+[role=tab]{flex:1 0 auto;min-width:120px;background:none;border:0;border-bottom:3px solid transparent;padding:14px 18px;text-align:left;display:flex;flex-direction:column;gap:1px;color:var(--muted);transition:background .15s,color .15s}
+[role=tab] b{font:800 1rem var(--display);color:inherit}
+[role=tab] span{font-size:.8rem}
+[role=tab]:hover{background:color-mix(in srgb,var(--surface) 60%,transparent);color:var(--ink)}
+[role=tab][aria-selected=true]{background:var(--surface);color:var(--ink);border-bottom-color:var(--accent)}
+[role=tabpanel]{padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px 32px}
+[role=tabpanel][hidden]{display:none}
+[role=tabpanel] h3{margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}
+.chips li{font-size:.88rem;padding:5px 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:500}
+.ticks{margin:0;padding:0;list-style:none;display:grid;gap:9px}
+.ticks li{padding-left:22px;position:relative;font-size:.95rem}
+.ticks li::before{content:"";position:absolute;left:2px;top:.55em;width:9px;height:5px;border-left:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg)}
+.selfcheck{grid-column:1/-1;border-left:4px solid var(--accent);background:var(--surface-2);border-radius:0 10px 10px 0;padding:12px 16px;font-size:.95rem}
+.selfcheck b{font:500 .72rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:2px}
+.codebox{grid-column:1/-1;position:relative;background:var(--code-bg);color:var(--code-ink);border-radius:10px;overflow:hidden}
+.codebox pre{margin:0;padding:16px 18px;overflow-x:auto;font:400 .84rem/1.65 var(--mono)}
+.codebox .bar{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 8px 18px;border-bottom:1px solid rgba(255,255,255,.08);font:500 .72rem var(--mono);color:#8fa5b3;letter-spacing:.06em;text-transform:uppercase}
+.copy{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#d8e6ef;border-radius:7px;padding:4px 12px;font:500 .78rem var(--mono)}
+.copy:hover{background:rgba(255,255,255,.16)}
+/* ---------- Accordion ---------- */
+.acc-tools{display:flex;gap:8px;margin:20px 0 12px}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:7px 14px;font-weight:500;font-size:.88rem;transition:background .15s,border-color .15s}
+.btn:hover{background:var(--surface-2);border-color:var(--muted)}
+.acc{overflow:hidden}
+.acc-item+.acc-item{border-top:1px solid var(--line)}
+.acc-btn{width:100%;display:flex;align-items:center;gap:14px;background:none;border:0;padding:16px 20px;text-align:left}
+.acc-btn:hover{background:var(--surface-2)}
+.acc-btn .t{font:600 1rem var(--display);flex:1}
+.acc-btn .m{font:500 .72rem var(--mono);color:var(--muted);background:var(--surface-2);padding:2px 9px;border-radius:999px}
+.acc-btn .chev{width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s;margin:0 4px 3px}
+.acc-btn[aria-expanded=true] .chev{transform:rotate(-135deg) translate(-2px,-2px)}
+.acc-btn[aria-expanded=true]{background:var(--accent-soft)}
+.acc-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease}
+.acc-panel.open{grid-template-rows:1fr}
+.acc-panel>div{overflow:hidden}
+.acc-body{padding:4px 20px 20px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px 28px}
+.acc-body dt{font:500 .7rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.acc-body dd{margin:0;font-size:.93rem}
+/* ---------- Hover highlight ---------- */
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:20px 0 12px}
+.filters>span{font-size:.85rem;color:var(--muted);margin-right:4px}
+.fchip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font:500 .84rem var(--mono);transition:background .15s,border-color .15s,color .15s}
+.fchip:hover,.fchip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:620px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line);transition:background .12s,opacity .15s}
+thead th{font:500 .72rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--surface-2)}
+tbody tr:last-child td{border-bottom:0}
+td.id{font:500 .85rem var(--mono);color:var(--accent)}
+.pill{font:500 .78rem var(--mono);padding:2px 9px;border-radius:999px;background:var(--surface-2)}
+.pill.yes{background:var(--accent-soft);color:var(--accent)}
+.pill.part{background:var(--warn-soft);color:var(--warn)}
+.hl-row td{background:var(--accent-soft)}
+.hl-col{background:color-mix(in srgb,var(--accent-soft) 55%,transparent)}
+.hl-row td.hl-col{background:color-mix(in srgb,var(--accent) 22%,var(--accent-soft))}
+tbody.filtering tr:not(.match){opacity:.35}
+tbody.filtering tr.match td{background:var(--accent-soft)}
+/* ---------- Slide viewer ---------- */
+.deck{margin-top:22px;display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:16px;align-items:start}
+.stage{position:relative;aspect-ratio:16/9;container-type:inline-size;background:var(--slide-bg);color:var(--slide-ink);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);outline-offset:4px}
+.slide{position:absolute;inset:0;padding:6cqw 7cqw;display:flex;flex-direction:column;justify-content:center;gap:2.2cqw;opacity:0;visibility:hidden;transform:translateX(2.5cqw);transition:opacity .35s,transform .35s,visibility .35s}
+.slide.is-current{opacity:1;visibility:visible;transform:none}
+.s-k{font:500 1.5cqw/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--slide-accent)}
+.s-h{font:800 5cqw/1.08 var(--display);margin:0;text-wrap:balance;max-width:20ch}
+.s-p{font-size:2.2cqw;line-height:1.45;color:var(--slide-muted);max-width:44ch}
+.stairs{display:flex;align-items:flex-end;gap:1.6cqw;height:23cqw;margin-top:1cqw}
+.step{flex:1;border-radius:.8cqw .8cqw 0 0;padding:1.5cqw;background:color-mix(in srgb,var(--slide-accent) var(--a),transparent);border:1px solid color-mix(in srgb,var(--slide-accent) 45%,transparent);border-bottom:0;display:flex;flex-direction:column;justify-content:flex-end;gap:.4cqw}
+.step b{font:800 3cqw/1 var(--display)}
+.step span{font-size:1.65cqw;line-height:1.3;color:var(--slide-ink)}
+.gates{display:flex;align-items:stretch;gap:1.2cqw;margin-top:1cqw}
+.gate-s{flex:1;padding:1.8cqw;border:1px solid rgba(255,255,255,.18);border-radius:1cqw;display:flex;flex-direction:column;gap:1cqw;font-size:1.9cqw;line-height:1.3}
+.gate-s b{font:800 2.3cqw var(--display)}
+.gate-s em{font:500 1.35cqw var(--mono);font-style:normal;color:var(--slide-warn);border:1px solid var(--slide-warn);border-radius:99px;padding:.3cqw 1.2cqw;align-self:flex-start;margin-top:auto}
+.arrow-s{align-self:center;color:var(--slide-accent);font-size:2.4cqw}
+.stats{display:flex;gap:3cqw;margin-top:1cqw}
+.stat{flex:1;border-top:2px solid var(--slide-accent);padding-top:1.4cqw}
+.stat b{display:block;font:800 7.5cqw/1 var(--display)}
+.stat span{display:block;margin-top:1cqw;font-size:1.8cqw;line-height:1.35;color:var(--slide-muted)}
+.todo{list-style:none;margin:1cqw 0 0;padding:0;display:grid;gap:1.3cqw}
+.todo li{display:flex;gap:1.8cqw;align-items:baseline;font-size:2.2cqw;padding-bottom:1.3cqw;border-bottom:1px solid rgba(255,255,255,.12)}
+.todo code{font:500 1.7cqw var(--mono);color:var(--slide-accent);min-width:6cqw}
+.deck-bar{display:flex;align-items:center;gap:12px;margin-top:12px}
+.nav-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;transition:background .15s}
+.nav-btn:hover:not(:disabled){background:var(--surface-2)}
+.nav-btn:disabled{opacity:.4;cursor:default}
+.nav-btn svg{display:block}
+.count{font:500 .85rem var(--mono);color:var(--muted);min-width:52px;text-align:center}
+.track{flex:1;height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.track i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.rail{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.rail button{width:100%;display:flex;gap:10px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:.84rem;transition:background .15s,border-color .15s}
+.rail button:hover{background:var(--surface-2)}
+.rail button[aria-current=true]{border-color:var(--accent);background:var(--accent-soft)}
+.rail .rn{font:500 .78rem var(--mono);color:var(--accent);min-width:14px}
+/* ---------- Other interactives ---------- */
+.sub{margin:40px 0 14px}
+.sub p{color:var(--muted);margin-top:4px;font-size:.95rem}
+.flips{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.flip{background:none;border:0;padding:0;perspective:900px;text-align:left}
+.flip-in{display:grid;transform-style:preserve-3d;transition:transform .55s}
+.flip[aria-pressed=true] .flip-in{transform:rotateY(180deg)}
+.face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;padding:20px;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:190px}
+.front{background:var(--surface);box-shadow:var(--shadow)}
+.front .k{font:500 .72rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--warn)}
+.front b{font:800 1.3rem/1.2 var(--display)}
+.front span.h{margin-top:auto;font-size:.82rem;color:var(--muted)}
+.back{background:var(--accent);color:var(--accent-ink);transform:rotateY(180deg);border-color:var(--accent)}
+.back .k{font:500 .72rem var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.back span.t{font-size:.95rem;line-height:1.5}
+.seg{display:inline-flex;padding:4px;background:var(--surface-2);border-radius:11px;gap:2px}
+.seg button{background:none;border:0;border-radius:8px;padding:7px 16px;font-weight:500;font-size:.9rem;color:var(--muted);transition:background .15s,color .15s}
+.seg button[aria-pressed=true]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.maplist{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.maplist li{padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.maplist b{font:800 1.05rem/1.25 var(--display)}
+.maplist span{font-size:.82rem;color:var(--muted)}
+.maplist li.swap{animation:pop .3s}
+@keyframes pop{from{transform:translateY(5px);opacity:.3}to{transform:none;opacity:1}}
+footer{padding:56px 0 64px;color:var(--muted);font-size:.88rem}
+/* ---------- Responsive ---------- /
+@media (max-width:860px){
+.flow{grid-template-columns:1fr;gap:0}
+.link{height:34px}
+.link svg{transform:rotate(90deg)}
+.flow-detail{grid-template-columns:1fr 1fr}
+.deck{grid-template-columns:1fr}
+.rail{display:flex;overflow-x:auto;padding-bottom:4px}
+.rail li{flex:0 0 150px}
+.flips,.maplist{grid-template-columns:1fr}
+.face{min-height:150px}
+}
+@media (max-width:640px){
+[role=tabpanel],.acc-body{grid-template-columns:1fr}
+.flow-detail{grid-template-columns:1fr}
+.brand{display:none}
+.links{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+,::before,::after{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <nav class="wrap" aria-label="Điều hướng trang">
+    <div class="brand">Component<span>.</span>demo</div>
+    <div class="links" id="navlinks">
+      <a href="#flow">Flow diagram</a>
+      <a href="#tabs">Tab</a>
+      <a href="#accordion">Accordion</a>
+      <a href="#hover">Hover highlight</a>
+      <a href="#slides">Slide viewer</a>
+      <a href="#more">Khác</a>
+    </div>
+  </nav>
+</header>
+<main class="wrap">
+<div class="hero">
+    <h1>Component trình bày ý tưởng</h1>
+    <p>Một trang HTML duy nhất, không cần build. Mỗi khối bên dưới là một component dùng lại được. Nội dung mẫu là thang năng lực AI cho BA (L1 đến L4) và luồng BA agentic.</p>
+    <div class="tags" aria-label="Danh sách component">
+      <span class="tag">nav + scrollspy</span><span class="tag">flow diagram</span><span class="tag">tabs</span><span class="tag">accordion</span><span class="tag">hover highlight</span><span class="tag">slide viewer</span><span class="tag">flip card</span><span class="tag">toggle</span><span class="tag">copy code</span>
+    </div>
+  </div>
+  <!-- ===== FLOW ===== -->
+<section id="flow">
+    <div class="eyebrow">Flow diagram</div>
+    <h2>Một request đi qua workflow agentic</h2>
+    <p class="lede">Rê chuột hoặc bấm vào một bước. Bước đó và hai mũi tên nối với nó sáng lên, phần còn lại mờ đi, và khung bên dưới đổi theo.</p>
+    <div class="legend" aria-hidden="true">
+      <span style="--k:var(--accent)"><i></i>Agent làm</span>
+      <span style="--k:var(--kind-code)"><i></i>Code kiểm tra</span>
+      <span style="--k:var(--warn)"><i></i>Người duyệt</span>
+    </div>
+    <div class="flow" id="flowDiagram" role="group" aria-label="Sơ đồ luồng 5 bước"></div>
+    <div class="card flow-detail" id="flowDetail" aria-live="polite"></div>
+  </section>
+  <!-- ===== TABS ===== -->
+<section id="tabs">
+    <div class="eyebrow">Tab</div>
+    <h2>Thang năng lực AI cho BA</h2>
+    <p class="lede">Dùng phím mũi tên trái, phải để đổi tab. Mỗi tab giữ cùng một khung: khái niệm, best practice, câu tự đánh giá.</p>
+    <div class="card tabs">
+      <div role="tablist" aria-label="Level AI">
+        <button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true"><b>L1</b><span>Chat trợ lý</span></button>
+        <button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1"><b>L2</b><span>Prompt có cấu trúc</span></button>
+        <button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1"><b>L3</b><span>Workflow agentic</span></button>
+        <button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1"><b>L4</b><span>Quản trị và đo lường</span></button>
+      </div>
+      <div role="tabpanel" id="panel-0" aria-labelledby="tab-0">
+        <div><h3>Khái niệm</h3><ul class="chips"><li>LLM sinh token</li><li>Hallucination</li><li>Context window</li><li>Prompt cơ bản</li><li>Data privacy</li></ul></div>
+        <div><h3>Best practice</h3><ul class="ticks">
+          <li>Số liệu, quy tắc, ngày tháng do AI đưa ra đều phải tự kiểm lại.</li>
+          <li>Dán tài liệu gốc (transcript, email) thay vì hỏi kiến thức chung.</li>
+          <li>Không dán PAN, PII hay tài liệu mật vào tool chưa được duyệt.</li></ul></div>
+        <div class="codebox">
+          <div class="bar"><span>Prompt cơ bản cho BA</span><button class="copy" type="button" data-copy="prompt-l1">Sao chép</button></div>
+<pre id="prompt-l1">ROLE:        Bạn là Technical BA trong mảng payments.
+TASK:        Viết 3–5 user story từ đoạn ghi chú bên dưới.
+CONTEXT:     &lt;dán ghi chú meeting / email&gt;
+FORMAT:      Bảng: Story | AC (Given/When/Then) | Câu hỏi mở
+        </div>
+        <div class="selfcheck"><b>Tự đánh giá</b>Tôi có kiểm lại mọi con số AI đưa ra không?</div>
+      </div>
+
+      <div role="tabpanel" id="panel-1" aria-labelledby="tab-1" hidden>
+        <div><h3>Khái niệm</h3><ul class="chips"><li>System prompt / persona</li><li>Few-shot</li><li>Output template</li><li>Guardrails</li><li>Context engineering</li></ul></div>
+        <div><h3>Best practice</h3><ul class="ticks">
+          <li>Viết persona theo 6 yếu tố: role, objectives, instructions, output, guardrails, review.</li>
+          <li>Lưu bộ story/AC mẫu của team, có cả mẫu xấu kèm chú thích.</li>
+          <li>Ít mà đúng: tách instructions khỏi data, quản lý prompt library có version.</li></ul></div>
+        <div class="selfcheck"><b>Tự đánh giá</b>Hai người trong team dùng cùng prompt có ra chất lượng giống nhau không?</div>
+      </div>
+
+      <div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden>
+        <div><h3>Khái niệm</h3><ul class="chips"><li>Agent</li><li>Skill</li><li>Subagent</li><li>Tools / MCP</li><li>HITL checkpoint</li></ul></div>
+        <div><h3>Best practice</h3><ul class="ticks">
+          <li>Mỗi skill sinh một artifact; input và output ghi bằng đường dẫn file.</li>
+          <li>Tách người viết và người review thành hai subagent riêng.</li>
+          <li>Tools bắt đầu ở chế độ read-only; chỉ cho ghi sau khi có checkpoint.</li></ul></div>
+        <div class="selfcheck"><b>Tự đánh giá</b>Một request đi từ intake đến requirements pack mà tôi chỉ phải duyệt?</div>
+      </div>
+
+      <div role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden>
+        <div><h3>Khái niệm</h3><ul class="chips"><li>Evals / golden set</li><li>Drafter–critic</li><li>Review log</li><li>ContextOps</li><li>Observability</li></ul></div>
+        <div><h3>Best practice</h3><ul class="ticks">
+          <li>Chạy lại golden set mỗi khi sửa skill; thêm case mới từ lỗi thật.</li>
+          <li>Critic chỉ nhận file, không nhận lập luận của drafter.</li>
+          <li>Mỗi file KB có owner, ngày review và nguồn.</li></ul></div>
+        <div class="selfcheck"><b>Tự đánh giá</b>Tôi chứng minh được bằng số rằng bản skill mới tốt hơn bản cũ?</div>
+      </div>
+    </div>
+</section>
+  <!-- ===== ACCORDION ===== -->
+<section id="accordion">
+    <div class="eyebrow">Accordion</div>
+    <h2>Kiểm tra tất định cho artifact BA</h2>
+    <p class="lede">Nguyên tắc: LLM sinh, code kiểm, người quyết. Mở từng mục để xem cách làm và lỗi mà nó bắt được.</p>
+    <div class="acc-tools">
+      <button class="btn" type="button" id="accOpen">Mở tất cả</button>
+      <button class="btn" type="button" id="accClose">Đóng tất cả</button>
+    </div>
+    <div class="card acc" id="acc">
+      <div class="acc-item">
+        <button class="acc-btn" type="button" aria-expanded="true" aria-controls="ap-0" id="ab-0"><span class="t">Citation tồn tại</span><span class="m">grep</span><span class="chev"></span></button>
+        <div class="acc-panel open" id="ap-0" role="region" aria-labelledby="ab-0"><div><dl class="acc-body">
+          <div><dt>Cách làm</dt><dd>Grep mọi <code>[KB: file#ID]</code> và đối chiếu với KB.</dd></div>
+          <div><dt>Bắt được lỗi gì</dt><dd>Hallucination, trích dẫn sai nguồn.</dd></div></dl></div></div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-btn" type="button" aria-expanded="false" aria-controls="ap-1" id="ab-1"><span class="t">Schema front-matter</span><span class="m">yaml</span><span class="chev"></span></button>
+        <div class="acc-panel" id="ap-1" role="region" aria-labelledby="ab-1"><div><dl class="acc-body">
+          <div><dt>Cách làm</dt><dd>Validate YAML đầu file theo schema.</dd></div>
+          <div><dt>Bắt được lỗi gì</dt><dd>Thiếu field mà bước eval cần để chấm điểm.</dd></div></dl></div></div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-btn" type="button" aria-expanded="false" aria-controls="ap-2" id="ab-2"><span class="t">Coverage</span><span class="m">script</span><span class="chev"></span></button>
+        <div class="acc-panel" id="ap-2" role="region" aria-labelledby="ab-2"><div><dl class="acc-body">
+          <div><dt>Cách làm</dt><dd>Mỗi AC có ít nhất 1 test case; mỗi gap có FR; đủ mọi dòng NFR.</dd></div>
+          <div><dt>Bắt được lỗi gì</dt><dd>Thiếu sót và scope creep.</dd></div></dl></div></div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-btn" type="button" aria-expanded="false" aria-controls="ap-3" id="ab-3"><span class="t">Từ cấm</span><span class="m">wordlist</span><span class="chev"></span></button>
+        <div class="acc-panel" id="ap-3" role="region" aria-labelledby="ab-3"><div><dl class="acc-body">
+          <div><dt>Cách làm</dt><dd>Quét danh sách từ mơ hồ như "nhanh chóng", "phù hợp", "thân thiện".</dd></div>
+          <div><dt>Bắt được lỗi gì</dt><dd>Requirement không test được.</dd></div></dl></div></div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-btn" type="button" aria-expanded="false" aria-controls="ap-4" id="ab-4"><span class="t">Dữ liệu nhạy cảm</span><span class="m">regex + Luhn</span><span class="chev"></span></button>
+        <div class="acc-panel" id="ap-4" role="region" aria-labelledby="ab-4"><div><dl class="acc-body">
+          <div><dt>Cách làm</dt><dd>Regex kết hợp kiểm Luhn cho số thẻ.</dd></div>
+          <div><dt>Bắt được lỗi gì</dt><dd>Lộ PAN hoặc PII trong artifact.</dd></div></dl></div></div>
+      </div>
+    </div>
+  </section>
+  <!-- ===== HOVER ===== -->
+<section id="hover">
+    <div class="eyebrow">Hover highlight</div>
+    <h2>Use case BA theo level AI</h2>
+    <p class="lede">Rê chuột lên bảng để sáng dòng và cột đang trỏ tới. Rê hoặc bấm vào chip level để lọc các dòng tương ứng.</p>
+    <div class="filters" id="filters">
+      <span>Lọc theo level:</span>
+      <button class="fchip" type="button" data-level="L2" aria-pressed="false">L2</button>
+      <button class="fchip" type="button" data-level="L3" aria-pressed="false">L3</button>
+      <button class="fchip" type="button" data-level="L4" aria-pressed="false">L4</button>
+    </div>
+    <div class="card tablewrap">
+      <table id="uc">
+        <thead><tr><th data-c="0">#</th><th data-c="1">Use case</th><th data-c="2">Knowledge area</th><th data-c="3">Level</th><th data-c="4">Có trong JD</th><th data-c="5">Đề xuất hiện có</th></tr></thead>
+        <tbody>
+          <tr data-levels="L3" tabindex="0"><td class="id" data-c="0">UC5</td><td data-c="1">Transcript thành minutes, decisions, open questions</td><td data-c="2">E&amp;C</td><td data-c="3">L3</td><td data-c="4"><span class="pill yes">Có</span></td><td data-c="5"><span class="pill">Chưa</span></td></tr>
+          <tr data-levels="L3 L4" tabindex="0"><td class="id" data-c="0">UC6</td><td data-c="1">Triage request từ Slack, email, ticket</td><td data-c="2">E&amp;C</td><td data-c="3">L3–L4</td><td data-c="4"><span class="pill yes">Có</span></td><td data-c="5"><span class="pill yes">Đủ</span></td></tr>
+          <tr data-levels="L2" tabindex="0"><td class="id" data-c="0">UC7</td><td data-c="1">Prioritization và sign-off baseline</td><td data-c="2">RLCM</td><td data-c="3">L2</td><td data-c="4"><span class="pill yes">Có</span></td><td data-c="5"><span class="pill">Chưa</span></td></tr>
+          <tr data-levels="L4" tabindex="0"><td class="id" data-c="0">UC8</td><td data-c="1">Duy trì traceability matrix</td><td data-c="2">RLCM</td><td data-c="3">L4</td><td data-c="4"><span class="pill yes">Có</span></td><td data-c="5"><span class="pill part">Một phần</span></td></tr>
+          <tr data-levels="L3" tabindex="0"><td class="id" data-c="0">UC9</td><td data-c="1">Phân tích tác động khi yêu cầu thay đổi</td><td data-c="2">RLCM</td><td data-c="3">L3</td><td data-c="4"><span class="pill yes">Có</span></td><td data-c="5"><span class="pill">Chưa</span></td></tr>
+          <tr data-levels="L3" tabindex="0"><td class="id" data-c="0">UC13</td><td data-c="1">Đánh giá cơ hội tự động hóa bằng AI agent</td><td data-c="2">SA</td><td data-c="3">L3</td><td data-c="4"><span class="pill yes">Có</span></td><td data-c="5"><span class="pill">Chưa</span></td></tr>
+          <tr data-levels="L3 L4" tabindex="0"><td class="id" data-c="0">UC15</td><td data-c="1">Đặc tả FR, NFR, technical</td><td data-c="2">RADD</td><td data-c="3">L3–L4</td><td data-c="4"><span class="pill yes">Có</span></td><td data-c="5"><span class="pill yes">Đủ</span></td></tr>
+          <tr data-levels="L3 L4" tabindex="0"><td class="id" data-c="0">UC19</td><td data-c="1">UAT: kế hoạch, review test case, triage defect</td><td data-c="2">SE</td><td data-c="3">L3–L4</td><td data-c="4"><span class="pill yes">Có</span></td><td data-c="5"><span class="pill part">Chưa điều phối</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <!-- ===== SLIDES ===== -->
+<section id="slides">
+    <div class="eyebrow">Slide viewer</div>
+    <h2>Xem như một bộ slide trên SlideShare</h2>
+    <p class="lede">Khung 16:9 co giãn theo chiều rộng. Bấm vào khung rồi dùng phím mũi tên, Home, End; hoặc dùng nút và danh sách bên phải.</p>
+    <div class="deck">
+      <div>
+        <div class="stage" id="stage" tabindex="0" role="group" aria-roledescription="bộ slide" aria-label="Bộ slide demo, dùng phím mũi tên để chuyển">
+          <div class="slide is-current" data-title="Mở đầu">
+            <div class="s-k">Applied AI · Technical BA</div>
+            <h3 class="s-h">LLM sinh, code kiểm, người quyết</h3>
+            <p class="s-p">Ba vai trong một workflow BA agentic, mỗi vai làm đúng việc nó làm tốt nhất.</p>
+          </div>
+
+          <div class="slide" data-title="Thang L1 đến L4">
+            <div class="s-k">Thang năng lực</div>
+            <h3 class="s-h">Bốn bậc từ chat đến quản trị</h3>
+            <div class="stairs">
+              <div class="step" style="--a:14%;height:36%"><b>L1</b><span>Chat trợ lý</span></div>
+              <div class="step" style="--a:24%;height:56%"><b>L2</b><span>Prompt và context</span></div>
+              <div class="step" style="--a:36%;height:78%"><b>L3</b><span>Workflow agentic</span></div>
+              <div class="step" style="--a:52%;height:100%"><b>L4</b><span>Evals và ContextOps</span></div>
+            </div>
+          </div>
+
+          <div class="slide" data-title="Luồng một request">
+            <div class="s-k">Luồng xử lý</div>
+            <h3 class="s-h">Một request đi qua bốn cổng</h3>
+            <div class="gates">
+              <div class="gate-s"><b>Triage</b>Phân loại type, priority, system<em>BA duyệt</em></div>
+              <span class="arrow-s" aria-hidden="true">→</span>
+              <div class="gate-s"><b>Requirements</b>FR, NFR, story kèm AC</div>
+              <span class="arrow-s" aria-hidden="true">→</span>
+              <div class="gate-s"><b>Critic</b>Soi độc lập, chạy script kiểm tra<em>BA duyệt</em></div>
+              <span class="arrow-s" aria-hidden="true">→</span>
+              <div class="gate-s"><b>Publish</b>Ghi lên Jira, Confluence</div>
+            </div>
+          </div>
+
+          <div class="slide" data-title="Ba con số">
+            <div class="s-k">Cần nhớ</div>
+            <h3 class="s-h">Ba con số để bắt đầu</h3>
+            <div class="stats">
+              <div class="stat"><b>12–30</b><span>case thật đã ẩn danh cho golden set đầu tiên</span></div>
+              <div class="stat"><b>2</b><span>vòng drafter–critic tối đa trước khi chuyển cho người</span></div>
+              <div class="stat"><b>3</b><span>cách chấm, ưu tiên: tất định, LLM judge, người</span></div>
+            </div>
+          </div>
+
+          <div class="slide" data-title="Việc tiếp theo">
+            <div class="s-k">Còn thiếu</div>
+            <h3 class="s-h">Ba use case chưa được phủ</h3>
+            <ul class="todo">
+              <li><code>UC5</code><span>Transcript thành minutes, decisions, open questions</span></li>
+              <li><code>UC9</code><span>Phân tích tác động khi yêu cầu thay đổi</span></li>
+              <li><code>UC13</code><span>Đánh giá cơ hội tự động hóa bằng AI agent</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="deck-bar">
+          <button class="nav-btn" type="button" id="prev" aria-label="Slide trước"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg></button>
+          <span class="count" id="count" aria-live="polite">1 / 5</span>
+          <button class="nav-btn" type="button" id="next" aria-label="Slide sau"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg></button>
+          <div class="track" aria-hidden="true"><i id="bar" style="width:20%"></i></div>
+          <button class="btn" type="button" id="auto" aria-pressed="false">Tự chạy</button>
+        </div>
+      </div>
+      <ol class="rail" id="rail" aria-label="Danh sách slide"></ol>
+    </div>
+</section>
+  <!-- ===== MORE ===== -->
+<section id="more">
+    <div class="eyebrow">Khác</div>
+    <h2>Các dạng tương tác bổ sung</h2>
+    <div class="sub">
+      <h3>Flip card</h3>
+      <p>Bấm vào thẻ để lật. Mặt trước nêu rủi ro, mặt sau nêu cách chặn.</p>
+    </div>
+    <div class="flips" id="flips">
+      <button class="flip" type="button" aria-pressed="false"><span class="flip-in">
+        <span class="face front"><span class="k">Rủi ro</span><b>Hallucination</b><span class="h">Bấm để xem cách chặn</span></span>
+        <span class="face back"><span class="k">Cách chặn</span><span class="t">Bắt mọi quy tắc phải cite <code>[KB: file#ID]</code>, rồi dùng script grep kiểm tra ID có tồn tại trong KB.</span></span></span></button>
+      <button class="flip" type="button" aria-pressed="false"><span class="flip-in">
+        <span class="face front"><span class="k">Rủi ro</span><b>Rubber-stamping</b><span class="h">Bấm để xem cách chặn</span></span>
+        <span class="face back"><span class="k">Cách chặn</span><span class="t">Chỉ dừng khi có finding BLOCKER hoặc MAJOR, bắt buộc ghi lý do khi reject, và lấy mẫu output đã approve để xem lại.</span></span></span></button>
+      <button class="flip" type="button" aria-pressed="false"><span class="flip-in">
+        <span class="face front"><span class="k">Rủi ro</span><b>Overfit và drift</b><span class="h">Bấm để xem cách chặn</span></span>
+        <span class="face back"><span class="k">Cách chặn</span><span class="t">Regression gate: bản skill mới chỉ được merge khi điểm không tụt so với baseline và mọi case mới đều pass.</span></span></span></button>
+    </div>
+
+    <div class="sub">
+      <h3>Toggle đổi góc nhìn</h3>
+      <p>Chọn một góc nhìn, mỗi thẻ hiện thuật ngữ của góc đó và thuật ngữ tương đương ở góc còn lại.</p>
+    </div>
+    <div class="seg" role="group" aria-label="Góc nhìn">
+      <button type="button" data-view="0" aria-pressed="true">BA truyền thống</button>
+      <button type="button" data-view="1" aria-pressed="false">BA agentic</button>
+    </div>
+    <ul class="maplist card-list" id="maplist" style="padding:0"></ul>
+</section>
+</main>
+<footer>
+  <div class="wrap">Trang demo một file, không phụ thuộc thư viện ngoài. Mỗi component nằm trong một khối JS riêng ở cuối file nên có thể tách ra dùng lại.</div>
+</footer>
+<script>
+(function(){
+  'use strict';
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+  /* ===== Nav + scrollspy ===== */
+  (function(){
+    var links=$$('#navlinks a');
+    links.forEach(function(a){
+      a.addEventListener('click',function(e){
+        var id=a.getAttribute('href').slice(1), el=document.getElementById(id);
+        if(!el) return;
+        e.preventDefault();
+        el.scrollIntoView();
+        try{history.replaceState(null,'','#'+id)}catch(err){}
+      });
+    });
+    function spy(){
+      var y=window.scrollY+120, cur=null;
+      links.forEach(function(a){
+        var el=document.getElementById(a.getAttribute('href').slice(1));
+        if(el && el.offsetTop<=y) cur=a;
+      });
+      links.forEach(function(a){ if(a===cur) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); });
+    }
+    window.addEventListener('scroll',spy,{passive:true});
+    spy();
+  })();
+
+  /* ===== Flow diagram ===== */
+  (function(){
+    var steps=[
+      {kind:'agent',label:'Agent',name:'Intake',short:'Nhận request từ Slack, email, ticket',gate:false,
+       owner:'Agent intake',inp:'Tin nhắn, email, ticket thô',out:'Request đã chuẩn hóa',guard:'Không tự thêm số liệu. Thiếu thông tin thì ghi OPEN QUESTION.'},
+      {kind:'agent',label:'Agent',name:'Triage',short:'Phân loại type, priority, system, có cần tách không',gate:true,
+       owner:'Agent triage',inp:'Request đã chuẩn hóa',out:'Triage card',guard:'Sai ở bước này thì sai dây chuyền phía sau, nên BA xác nhận phân loại trước khi đi tiếp.'},
+      {kind:'agent',label:'Agent',name:'Requirements',short:'Soạn FR, NFR, user story kèm AC',gate:false,
+       owner:'Agent requirements',inp:'Triage card đã duyệt, phần KB liên quan',out:'Requirements pack (FR, NFR, story, AC Given/When/Then)',guard:'Mọi quy tắc phải cite [KB: file#ID].'},
+      {kind:'code',label:'Code + critic',name:'Critic và kiểm tra',short:'Soi độc lập, chạy script tất định',gate:true,
+       owner:'Subagent critic và script hook',inp:'Chỉ file requirements, không có lập luận của drafter',out:'Finding xếp theo severity',guard:'Tối đa 2 vòng viết và soi, sau đó chuyển cho người. BA accept hoặc reject từng finding.'},
+      {kind:'agent',label:'Agent',name:'Publish',short:'Ghi ra Jira, Confluence',gate:false,
+       owner:'Agent publish',inp:'Pack đã được duyệt',out:'Issue Jira, trang Confluence',guard:'Ghi ra hệ thống ngoài chỉ sau khi có approve, vì khó đảo ngược.'}
+    ];
+    var arrow='<svg width="36" height="12" viewBox="0 0 40 12" aria-hidden="true"><path d="M0 6h34M28 1l7 5-7 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var box=$('#flowDiagram'), detail=$('#flowDetail'), pinned=1;
+    var html='';
+    steps.forEach(function(s,i){
+      html+='<button type="button" class="node '+s.kind+'" data-i="'+i+'">'
+        +'<span class="kind">'+s.label+'</span><strong>'+s.name+'</strong><span class="d">'+s.short+'</span>'
+        +(s.gate?'<span class="gate">Người duyệt</span>':'')+'</button>';
+      if(i<steps.length-1) html+='<span class="link" aria-hidden="true">'+arrow+'</span>';
+    });
+    box.innerHTML=html;
+    var nodes=$$('.node',box), links=$$('.link',box);
+    function show(i){
+      var s=steps[i];
+      nodes.forEach(function(n,k){n.classList.toggle('is-active',k===i)});
+      links.forEach(function(l,k){l.classList.toggle('on',k===i-1||k===i)});
+      box.classList.add('has-active');
+      detail.innerHTML='<h3>'+s.name+'<small>bước '+(i+1)+' / '+steps.length+'</small></h3>'
+        +'<dl><dt>Ai làm</dt><dd>'+s.owner+'</dd></dl>'
+        +'<dl><dt>Đầu vào</dt><dd>'+s.inp+'</dd></dl>'
+        +'<dl><dt>Đầu ra</dt><dd>'+s.out+'</dd></dl>'
+        +'<dl class="'+(s.gate?'human':'')+'"><dt>'+(s.gate?'Checkpoint':'Guardrail')+'</dt><dd>'+s.guard+'</dd></dl>';
+    }
+    nodes.forEach(function(n){
+      var i=+n.dataset.i;
+      n.addEventListener('mouseenter',function(){show(i)});
+      n.addEventListener('focus',function(){show(i)});
+      n.addEventListener('click',function(){pinned=i;show(i)});
+    });
+    box.addEventListener('mouseleave',function(){show(pinned)});
+    show(pinned);
+  })();
+
+  /* ===== Tabs ===== */
+  (function(){
+    var tabs=$$('[role=tab]'), panels=$$('[role=tabpanel]');
+    function select(i,focus){
+      tabs.forEach(function(t,k){
+        var on=k===i;
+        t.setAttribute('aria-selected',on?'true':'false');
+        t.tabIndex=on?0:-1;
+        panels[k].hidden=!on;
+      });
+      if(focus) tabs[i].focus();
+    }
+    tabs.forEach(function(t,i){
+      t.addEventListener('click',function(){select(i,false)});
+      t.addEventListener('keydown',function(e){
+        var n=tabs.length, k=null;
+        if(e.key==='ArrowRight') k=(i+1)%n;
+        else if(e.key==='ArrowLeft') k=(i-1+n)%n;
+        else if(e.key==='Home') k=0;
+        else if(e.key==='End') k=n-1;
+        if(k!==null){e.preventDefault();select(k,true)}
+      });
+    });
+  })();
+
+  /* ===== Copy ===== */
+  $$('.copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var src=document.getElementById(b.dataset.copy), txt=src.textContent, old=b.textContent;
+      function done(m){b.textContent=m;setTimeout(function(){b.textContent=old},1600)}
+      try{
+        navigator.clipboard.writeText(txt).then(function(){done('Đã chép')},function(){fallback()});
+      }catch(err){fallback()}
+      function fallback(){
+        try{
+          var r=document.createRange(); r.selectNodeContents(src);
+          var sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        }catch(e2){}
+        done('Chọn và Ctrl+C');
+      }
+    });
+  });
+
+  /* ===== Accordion ===== */
+  (function(){
+    var btns=$$('.acc-btn');
+    function set(b,open){
+      var p=document.getElementById(b.getAttribute('aria-controls'));
+      b.setAttribute('aria-expanded',open?'true':'false');
+      p.classList.toggle('open',open);
+      p.inert=!open;
+    }
+    btns.forEach(function(b){
+      set(b,b.getAttribute('aria-expanded')==='true');
+      b.addEventListener('click',function(){set(b,b.getAttribute('aria-expanded')!=='true')});
+    });
+    $('#accOpen').addEventListener('click',function(){btns.forEach(function(b){set(b,true)})});
+    $('#accClose').addEventListener('click',function(){btns.forEach(function(b){set(b,false)})});
+  })();
+
+  /* ===== Hover highlight (crosshair + level filter) ===== */
+  (function(){
+    var tbl=$('#uc'), body=$('tbody',tbl), rows=$$('tr',body), pinned=null;
+    function clear(){
+      $$('.hl-row',tbl).forEach(function(r){r.classList.remove('hl-row')});
+      $$('.hl-col',tbl).forEach(function(c){c.classList.remove('hl-col')});
+    }
+    tbl.addEventListener('mouseover',function(e){
+      var cell=e.target.closest('td,th');
+      if(!cell||body.classList.contains('filtering')) return;
+      clear();
+      var c=cell.dataset.c;
+      $$('[data-c="'+c+'"]',tbl).forEach(function(x){x.classList.add('hl-col')});
+      var row=cell.closest('tbody tr'); if(row) row.classList.add('hl-row');
+    });
+    tbl.addEventListener('mouseleave',clear);
+    rows.forEach(function(r){
+      r.addEventListener('focus',function(){clear();r.classList.add('hl-row')});
+      r.addEventListener('blur',clear);
+    });
+
+    var chips=$$('.fchip');
+    function filter(level){
+      if(!level){body.classList.remove('filtering');rows.forEach(function(r){r.classList.remove('match')});return}
+      clear();
+      body.classList.add('filtering');
+      rows.forEach(function(r){r.classList.toggle('match',r.dataset.levels.split(' ').indexOf(level)>-1)});
+    }
+    chips.forEach(function(c){
+      c.addEventListener('mouseenter',function(){filter(c.dataset.level)});
+      c.addEventListener('focus',function(){filter(c.dataset.level)});
+      c.addEventListener('mouseleave',function(){filter(pinned)});
+      c.addEventListener('blur',function(){filter(pinned)});
+      c.addEventListener('click',function(){
+        pinned=(pinned===c.dataset.level)?null:c.dataset.level;
+        chips.forEach(function(x){x.setAttribute('aria-pressed',x.dataset.level===pinned?'true':'false')});
+        filter(pinned);
+      });
+    });
+  })();
+
+  /* ===== Slide viewer ===== */
+  (function(){
+    var stage=$('#stage'), slides=$$('.slide',stage), rail=$('#rail'), n=slides.length, cur=0, timer=null;
+    var prev=$('#prev'), next=$('#next'), count=$('#count'), bar=$('#bar'), auto=$('#auto');
+    slides.forEach(function(s,i){
+      var li=document.createElement('li'), b=document.createElement('button');
+      b.type='button';
+      b.innerHTML='<span class="rn">'+(i+1)+'</span><span>'+s.dataset.title+'</span>';
+      b.addEventListener('click',function(){go(i)});
+      li.appendChild(b); rail.appendChild(li);
+    });
+    var rb=$$('button',rail);
+    function go(i){
+      cur=Math.max(0,Math.min(n-1,i));
+      slides.forEach(function(s,k){s.classList.toggle('is-current',k===cur); s.setAttribute('aria-hidden',k===cur?'false':'true')});
+      rb.forEach(function(b,k){ if(k===cur) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current')});
+      count.textContent=(cur+1)+' / '+n;
+      bar.style.width=((cur+1)/n*100)+'%';
+      prev.disabled=cur===0; next.disabled=cur===n-1;
+    }
+    prev.addEventListener('click',function(){go(cur-1)});
+    next.addEventListener('click',function(){go(cur+1)});
+    stage.addEventListener('keydown',function(e){
+      var k=null;
+      if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ') k=cur+1;
+      else if(e.key==='ArrowLeft'||e.key==='PageUp') k=cur-1;
+      else if(e.key==='Home') k=0;
+      else if(e.key==='End') k=n-1;
+      if(k!==null){e.preventDefault();go(k)}
+    });
+    stage.addEventListener('click',function(){stage.focus()});
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce){auto.disabled=true;auto.title='Tắt vì thiết bị yêu cầu giảm chuyển động'}
+    function stop(){clearInterval(timer);timer=null;auto.setAttribute('aria-pressed','false');auto.textContent='Tự chạy'}
+    auto.addEventListener('click',function(){
+      if(timer){stop();return}
+      auto.setAttribute('aria-pressed','true');auto.textContent='Dừng';
+      timer=setInterval(function(){ if(cur>=n-1){stop()} else go(cur+1) },4000);
+    });
+    go(0);
+  })();
+
+  /* ===== Flip cards ===== */
+  $$('.flip').forEach(function(f){
+    var front=$('.front',f), back=$('.back',f);
+    function sync(){
+      var on=f.getAttribute('aria-pressed')==='true';
+      front.setAttribute('aria-hidden',on?'true':'false');
+      back.setAttribute('aria-hidden',on?'false':'true');
+    }
+    sync();
+    f.addEventListener('click',function(){
+      f.setAttribute('aria-pressed',f.getAttribute('aria-pressed')==='true'?'false':'true');
+      sync();
+    });
+  });
+
+  /* ===== Toggle view ===== */
+  (function(){
+    var pairs=[
+      ['Requirements gathering','Problem framing'],
+      ['Process mapping','Thiết kế workflow / agent'],
+      ['Business rules','Guardrails'],
+      ['UAT, test cases','Evals'],
+      ['Sign-off','Checkpoint human-in-the-loop'],
+      ['Data requirements','Context design']
+    ];
+    var list=$('#maplist'), btns=$$('.seg button');
+    function render(v,animate){
+      var other=v===0?1:0, h='';
+      pairs.forEach(function(p){
+        h+='<li class="card'+(animate?' swap':'')+'"><b>'+p[v]+'</b><span>'+(v===0?'Tương đương agentic: ':'Tương đương truyền thống: ')+p[other]+'</span></li>';
+      });
+      list.innerHTML=h;
+    }
+    btns.forEach(function(b){
+      b.addEventListener('click',function(){
+        btns.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
+        render(+b.dataset.view,true);
+      });
+    });
+    render(0,false);
+  })();
+})();
+</body>
+</html>
